@@ -22,6 +22,7 @@ function DownloadsPage() {
   const [reciterFilter, setReciterFilter] = useState('all');
   const [status, setStatus] = useState('all');
   const [query, setQuery] = useState('');
+  const [pick, setPick] = useState('');
   const [selection, setSelection] = useState<number[]>([]);
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
@@ -32,7 +33,7 @@ function DownloadsPage() {
   useEffect(() => { run(auditDownloads()); }, []);
   const visible = records.filter(r => (reciterFilter === 'all' || r.reader === reciterFilter) && (status === 'all' || (status === 'queue' ? ['queued', 'downloading', 'paused'].includes(r.status) : r.status === status)) && `${r.chapter} ${CHAPTER_LIST.find(c => c.id === r.chapter)?.transliterationName ?? ''} ${r.verse}`.toLowerCase().includes(query.toLowerCase())).sort((a, b) => a.chapter - b.chapter || a.verse - b.verse);
   const used = records.filter(r => r.status === 'downloaded').reduce((sum, r) => sum + r.bytes, 0);
-  const filterClasses = 'min-h-11 min-w-0 rounded-md border border-input bg-background px-3 text-sm text-foreground';
+  const filterClasses = 'min-h-11 min-w-0 rounded-xl border border-input bg-card px-3.5 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
   return <main className="mx-auto max-w-4xl px-4 pb-24">
     <header className="flex items-center gap-3 py-8"><Download className="text-primary" /><h1 className="font-display text-3xl text-foreground">Downloads</h1></header>
     <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-y border-border py-4 text-sm text-muted-foreground">
@@ -41,8 +42,8 @@ function DownloadsPage() {
       <span>{online ? 'Online' : 'Offline'}</span>
       {storage.persisted === false && <span>Browser may clear storage under pressure.</span>}
     </div>
-    <section className="border-b border-border py-5">
-      <h2 className="mb-3 font-medium text-foreground">Add surahs</h2>
+    <section className="surface-card mt-5 p-4">
+      <div className="mb-3 flex items-baseline justify-between gap-2"><h2 className="font-display text-xl text-foreground">Add surahs</h2>{selection.length > 0 && <button type="button" onClick={() => setSelection([])} className="text-xs font-medium text-primary">Clear ({selection.length})</button>}</div>
       <div className="flex flex-wrap gap-3">
         <select aria-label="Download reciter" value={reader} onChange={e => setReader(e.target.value)} className={filterClasses}>{READERS.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}</select>
         {single && <>
@@ -59,11 +60,14 @@ function DownloadsPage() {
         })())}><Download size={16} />Queue {selection.length || ''}</Button>
       </div>
       {single && <p className="mt-2 text-xs text-muted-foreground">Leave the ayah boxes empty to download the whole surah.</p>}
-      <div className="mt-3 grid max-h-48 grid-cols-1 gap-1 overflow-y-auto sm:grid-cols-2 md:grid-cols-3">
-        {CHAPTER_LIST.map(c => <label key={c.id} className="flex min-h-11 items-center gap-2 text-sm text-foreground"><input type="checkbox" aria-label={`Select ${c.transliterationName}`} checked={selection.includes(c.id)} onChange={e => setSelection(e.target.checked ? [...selection, c.id] : selection.filter(id => id !== c.id))} />{c.id}. {c.transliterationName}</label>)}
+      <input aria-label="Find a surah" placeholder="Find a surah to select" value={pick} onChange={e => setPick(e.target.value)} className={`${filterClasses} mt-3 w-full`} />
+      <div className="mt-2 grid max-h-72 grid-cols-1 gap-1.5 overflow-y-auto rounded-xl border border-border bg-background/60 p-1.5 sm:grid-cols-2 md:grid-cols-3">
+        {CHAPTER_LIST.filter(c => `${c.id} ${c.transliterationName}`.toLowerCase().includes(pick.toLowerCase())).map(c => { const on = selection.includes(c.id); return <label key={c.id} className={`flex min-h-11 cursor-pointer items-center gap-3 rounded-lg px-3 text-sm transition-colors ${on ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-muted'}`}><input type="checkbox" className="size-4 accent-primary" aria-label={`Select ${c.transliterationName}`} checked={on} onChange={e => setSelection(e.target.checked ? [...selection, c.id] : selection.filter(id => id !== c.id))} /><span className="w-7 shrink-0 text-xs tabular-nums text-muted-foreground">{c.id}</span><span className="truncate font-medium">{c.transliterationName}</span></label>; })}
       </div>
     </section>
-    <section className="py-5">
+    <section className="py-6">
+      <h2 className="mb-3 font-display text-xl text-foreground">Your downloads</h2>
+      {records.length > 0 && <>
       <div className="mb-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
         <input aria-label="Search downloads" placeholder="Search surah or ayah" value={query} onChange={e => setQuery(e.target.value)} className={filterClasses} />
         <select aria-label="Filter reciter" value={reciterFilter} onChange={e => setReciterFilter(e.target.value)} className={filterClasses}><option value="all">All reciters</option>{READERS.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}</select>
@@ -76,6 +80,7 @@ function DownloadsPage() {
         <Button variant="ghost" size="sm" disabled={checking} onClick={() => { setChecking(true); run(auditDownloads().finally(() => setChecking(false))); }}><ShieldCheck size={16} />{checking ? 'Checking…' : 'Check files'}</Button>
         {reciterFilter !== 'all' && <Button variant="ghost" size="sm" onClick={() => { if (window.confirm('Delete all recordings and queued downloads for this reciter?')) run(deleteRecitations(reciterFilter)); }}><Trash2 size={16} />Delete reciter</Button>}
       </div>
+      </>}
       {(error || message) && <p role={error ? 'alert' : 'status'} className="mb-4 break-words text-sm text-muted-foreground">{error || message}</p>}
       <ul className="divide-y divide-border">
         {visible.map(r => {
@@ -93,7 +98,7 @@ function DownloadsPage() {
           </li>;
         })}
       </ul>
-      {!visible.length && <p className="py-8 text-center text-muted-foreground">No downloads {records.length ? 'match these filters.' : 'yet.'}</p>}
+      {!visible.length && <div className="surface-card flex flex-col items-center gap-2 px-6 py-10 text-center"><Download className="text-primary/60" size={28} /><p className="font-medium text-foreground">{records.length ? 'No downloads match these filters.' : 'No downloads yet'}</p>{!records.length && <p className="text-sm text-muted-foreground">Pick surahs above to listen without internet.</p>}</div>}
     </section>
   </main>;
 }
