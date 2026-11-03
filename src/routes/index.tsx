@@ -70,7 +70,7 @@ function Home() {
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <p className="flex items-center gap-1 text-xs opacity-85"><MapPin size={12} /> <span className="truncate">{place}</span> · {t("nextPrayer")}</p>
-            <p className="mt-1 font-display text-3xl">{next ? t(next.name) : "…"} <span className="text-xl tabular-nums opacity-90">{next ? formatTime(next.at) : ""}</span></p>
+            <p className="mt-1 font-display text-3xl">{next ? t(next.name) : "…"} <span className="text-xl tabular-nums opacity-90">{next ? formatTime(next.at, s) : ""}</span></p>
           </div>
           <span className="shrink-0 rounded-full bg-primary-foreground/15 px-3 py-1 text-sm tabular-nums">
             {next && now ? t("inTime", { t: formatDuration(next.at.getTime() - now.getTime()) }) : "…"}
