@@ -96,3 +96,7 @@
 
 # Separate text sizes for Arabic and translation
 - [x] Independent sliders for Arabic Quran text and translation on the chapter page and in Settings → Reading comfort; each saved on device, applied to verses and Bismillah; 86 tests pass.
+
+## Production polish (Nov 3)
+- [ ] Fix Downloads screen issues from screenshot
+- [ ] Review every screen on phone size and fix layout problems
