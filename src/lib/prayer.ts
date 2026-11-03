@@ -66,7 +66,7 @@ export function formatTime(d: Date) {
 }
 
 export function formatDuration(ms: number) {
-  const m = Math.max(0, Math.round(ms / 60000));
+  const m = Math.max(1, Math.ceil(ms / 60000));
   const h = Math.floor(m / 60);
   return h ? `${h}h ${m % 60}m` : `${m}m`;
 }
