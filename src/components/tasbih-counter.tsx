@@ -48,7 +48,7 @@ export function TasbihCounter({
     <div
       className={cn(
         "bg-counter-shell shadow-elevated",
-        full ? "mx-auto w-full max-w-[18rem] rounded-[1.5rem] p-3 pb-1 sm:max-w-[22rem] sm:rounded-[2rem] sm:p-4 sm:pb-2" : "rounded-2xl p-3",
+        full ? "mx-auto w-full max-w-[17rem] rounded-[1.5rem] p-3 pb-1 sm:max-w-[22rem] sm:rounded-[2rem] sm:p-4 sm:pb-2" : "rounded-2xl p-2.5 pb-0.5 sm:p-3",
       )}
     >
       <div
@@ -109,13 +109,13 @@ function LcdDisplay({
         dir="ltr"
         className={cn(
           "relative mt-1 text-right font-lcd leading-none",
-          large ? "text-4xl sm:text-5xl" : "text-4xl",
+          large ? "text-4xl sm:text-5xl" : "text-3xl sm:text-4xl",
         )}
         aria-hidden
       >
         <span className="absolute inset-0 text-lcd-ghost">{"8".repeat(digits)}</span>
-        <span key={value} className="relative inline-block whitespace-pre animate-count-tick">
-          {String(value).padStart(digits, " ")}
+        <span key={value} className="relative inline-block animate-count-tick">
+          {String(value)}
         </span>
       </div>
       {target != null && (
@@ -144,7 +144,7 @@ function CounterButton({
   size: "lg" | "md";
 }) {
   const C = 2 * Math.PI * 46;
-  const dim = size === "lg" ? "h-24 w-24 sm:h-32 sm:w-32" : "h-20 w-20";
+  const dim = size === "lg" ? "h-24 w-24 sm:h-32 sm:w-32" : "h-16 w-16 sm:h-20 sm:w-20";
   return (
     <div className={cn("relative grid place-items-center", dim, done && "animate-counter-done")}>
       <svg
@@ -171,7 +171,7 @@ function CounterButton({
         aria-label={label}
         className={cn(
           "counter-button grid place-items-center rounded-full text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold",
-          size === "lg" ? "h-[4.5rem] w-[4.5rem] sm:h-24 sm:w-24" : "h-14 w-14",
+          size === "lg" ? "h-[4.5rem] w-[4.5rem] sm:h-24 sm:w-24" : "h-12 w-12 sm:h-14 sm:w-14",
         )}
       >
         {done && (
