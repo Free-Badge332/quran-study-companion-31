@@ -22,3 +22,4 @@
 - Chapter pages always show Hafs text for every reciter (user choice); non-Hafs riwayah data under public/quran/riwayat/ and RiwayahText stay bundled but are not rendered on chapter pages.
 - Counting UI (Azkar items and /tasbih) goes through src/components/tasbih-counter.tsx with rules in src/lib/tasbih.ts; only the round button counts, and reset always confirms, so taps elsewhere never change a count.
 - Shared surfaces, motion and counter colours are tokens/utilities in src/styles.css (surface-card, bg-counter-shell, lcd-screen, counter-button); reuse them instead of per-screen styles.
+- Prayer times are computed for the selected city's calendar day and shown in that city's IANA time zone (City.tz; custom GPS uses device zone), so the next-prayer countdown is right regardless of device time zone.
