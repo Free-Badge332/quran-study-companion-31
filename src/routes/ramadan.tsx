@@ -83,8 +83,8 @@ function RamadanPage() {
           )}
           {times && (
             <div className="mt-4 grid grid-cols-2 gap-2">
-              <div className="rounded-xl bg-primary-foreground/10 p-3"><p className="text-xs opacity-80">{t("suhoorEnds")}</p><p className="mt-0.5 text-2xl font-semibold tabular-nums">{formatTime(times.fajr)}</p></div>
-              <div className="rounded-xl bg-primary-foreground/10 p-3"><p className="text-xs opacity-80">{t("iftar")}</p><p className="mt-0.5 text-2xl font-semibold tabular-nums">{formatTime(times.maghrib)}</p></div>
+              <div className="rounded-xl bg-primary-foreground/10 p-3"><p className="text-xs opacity-80">{t("suhoorEnds")}</p><p className="mt-0.5 text-2xl font-semibold tabular-nums">{formatTime(times.fajr, s)}</p></div>
+              <div className="rounded-xl bg-primary-foreground/10 p-3"><p className="text-xs opacity-80">{t("iftar")}</p><p className="mt-0.5 text-2xl font-semibold tabular-nums">{formatTime(times.maghrib, s)}</p></div>
             </div>
           )}
         </div>
@@ -135,7 +135,7 @@ function RamadanPage() {
           {PRAYERS.map((p) => (
             <li key={p} className={`flex items-center justify-between py-3 ${next?.name === p ? "font-semibold text-primary" : "text-foreground"}`}>
               <span>{t(p)}</span>
-              <span className="tabular-nums">{times ? formatTime(times[p]) : "—"}</span>
+              <span className="tabular-nums">{times ? formatTime(times[p], s) : "—"}</span>
             </li>
           ))}
         </ul>
